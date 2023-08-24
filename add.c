@@ -8,18 +8,23 @@
 void op_add(stack_t **stack, unsigned int line_number)
 {
 	int i, j;
+	stack_t *temp;
 
-	if (!(*stack)->next || !*stack || !stack)
+	if (!stack || !*stack || !(*stack)->next)
 	{
 		fprintf(stderr, "L%d: can't add, stack too short\n",
 			line_number);
-		free_stk(stack);
 		exit(EXIT_FAILURE);
 	}
 	i = (*stack)->n;
 	j = (*stack)->next->n;
-	*stack = (*stack)->next;
-	free((*stack)->prev);
-	(*stack)->prev = NULL;
 	(*stack)->n = i + j;
+
+	temp = (*stack)->next;
+	(*stack)->next = (*stack)->next->next;
+	if ((*stack)->next)
+	{
+		(*stack)->next->prev = *stack;
+	}
+	free(temp);
 }
